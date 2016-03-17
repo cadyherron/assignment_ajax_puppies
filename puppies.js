@@ -188,7 +188,6 @@ var Puppies = ( function(){
       )
     }
 
-
     function deletePuppy(id) {
       $.ajax({
         url: "https://ajax-puppies.herokuapp.com/puppies/"+ parseInt(id) +".json",
@@ -203,6 +202,7 @@ var Puppies = ( function(){
       $( document ).ajaxStart(function() {
         $( ".log" ).text( "Waiting...." );
         setTimeout(function() {
+             $( ".log" ).empty();
              $( ".log" ).text( "Still Waiting.." );
            },1000);
        });
@@ -216,9 +216,9 @@ var Puppies = ( function(){
     }  
 
    function erroredRequest() {
-      $(document ).ajaxError(function() {
+      $(document ).ajaxError(function(event, jqXHR, ajaxSettings, thrownError) {
         $( ".log" ).empty();
-        $( ".log" ).text( "Failed. Errors were:.." );
+        $( ".log" ).text( "Failed. Errors were:.." + thrownError);
        });
     }  
 
