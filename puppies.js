@@ -199,13 +199,38 @@ var Puppies = ( function(){
       })
     }
 
+    function startRequest() {
+      $( document ).ajaxStart(function() {
+        $( ".log" ).text( "Waiting...." );
+        setTimeout(function() {
+             $( ".log" ).text( "Still Waiting.." );
+           },1000);
+       });
+    }  
+
+   function successfulRequest() {
+      $(document ).ajaxSuccess(function() {
+        $( ".log" ).empty();
+        $( ".log" ).text( "Finished!" );
+       });
+    }  
+
+   function erroredRequest() {
+      $(document ).ajaxError(function() {
+        $( ".log" ).empty();
+        $( ".log" ).text( "Failed. Errors were:.." );
+       });
+    }  
 
     return {
       puppies: puppiesList,
       breeds: breedList,
       clickRefresh: clickRefresh,
       createPuppy: createPuppy,
-      adoptPuppy: adoptPuppy
+      adoptPuppy: adoptPuppy,
+      startRequest: startRequest,
+      successfulRequest: successfulRequest,
+      erroredRequest: erroredRequest
     };
 
 })();
@@ -216,4 +241,7 @@ $(document).ready(function( ){
     Puppies.clickRefresh();
     Puppies.createPuppy();
     Puppies.adoptPuppy();
+    Puppies.startRequest();
+    Puppies.successfulRequest();
+    Puppies.erroredRequest();
 });
