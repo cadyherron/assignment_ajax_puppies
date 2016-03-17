@@ -100,18 +100,17 @@ var Puppies = ( function(){
 
 
     function showBreeds(breeds) {
-
       for (var i = 0; i < breeds.length; i++) {
         $("select").append('<option value="' + breeds[i].id + '">' + 
           breeds[i].name + '</option>');
       }
-    
     }
 
     function showPuppies(puppies) {
       for (var i = 0; i < puppies.length; i++) {
-        $(".puppies-list").append('<li>' + puppies[i].name + ' (' + puppies[i].breed.name + '),  created' + puppies[i].created_at +
-          ' ago </li>');
+        $(".puppies-list").append('<li class="puppy'+i+'">' + puppies[i].name + ' (' + puppies[i].breed.name + '),  created ' + puppies[i].created_at + ' ago </li>');
+
+        $('li.puppy'+i).append('<button class="adopt" name="breed_id" value="'+ puppies[i].id + '">Adopt me!</button>')
       }    
     }
 
@@ -152,10 +151,57 @@ var Puppies = ( function(){
 
     };
 
+    function refresh() {
+      $('ul').html("")
+      puppiesList();
+    }
+
+    function clickRefresh() {
+      $('.refresh').click(refresh)
+    }
+
+    function createPuppy() {
+      $('form').submit(function(event) {
+        event.preventDefault();
+        var $el = $( event.target );
+
+        var formData = $el.serializeArray();
+        formData = ({name: formData[0].value, breed_id: formData[1].value})
+        formData = JSON.stringify(formData);
+
+        console.log(formData)
+
+        $.ajax({
+          url: _puppiesPath,
+          type: "POST",
+          data: formData,
+          contentType: "application/json",
+          dataType: "json",
+          success: function() { refresh() }
+        })
+      })
+    }
+
+
+    function adoptPuppy() {
+      $('.adopt').click(function(e) {
+        e.preventDefault();
+        console.log("Adopt!!!!!")
+      })
+    }
+
+
+    function deletePuppy() {
+      $.ajax()
+    }
+
 
     return {
       puppies: puppiesList,
       breeds: breedList,
+      clickRefresh: clickRefresh,
+      createPuppy: createPuppy,
+      adoptPuppy: adoptPuppy
     };
 
 })();
@@ -163,4 +209,7 @@ var Puppies = ( function(){
 $(document).ready(function( ){
     Puppies.puppies();
     Puppies.breeds();
+    Puppies.clickRefresh();
+    Puppies.createPuppy();
+    Puppies.adoptPuppy();
 });
