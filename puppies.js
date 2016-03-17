@@ -62,12 +62,9 @@
 //jQuery already loaded elsewhere
 
 
-//here's the revealing module
 var Puppies = ( function(){
-    // this private variable is the address you always hit up
     var _puppiesPath = "https://ajax-puppies.herokuapp.com/puppies.json";
     var _breedPath = "https://ajax-puppies.herokuapp.com/breeds.json";
-    // takes a callback function
 
 
     function timeSince(date) {
@@ -110,12 +107,11 @@ var Puppies = ( function(){
       for (var i = 0; i < puppies.length; i++) {
         $(".puppies-list").append('<li class="puppy'+i+'">' + puppies[i].name + ' (' + puppies[i].breed.name + '),  created ' + puppies[i].created_at + ' ago </li>');
 
-        $('li.puppy'+i).append('<button class="adopt" name="breed_id" value="'+ puppies[i].id + '">Adopt me!</button>')
+        $('li.puppy'+i).append('<button class="adopt" name="id" value="'+ puppies[i].id + '">Adopt me!</button>')
       }    
     }
 
     function breedList(){
-
       $.ajax( {
          url: _breedPath,
          type: 'GET',
@@ -133,7 +129,6 @@ var Puppies = ( function(){
     }
 
     function puppiesList() {
-
       $.ajax( {
          url: _puppiesPath,
          type: 'GET',
@@ -184,15 +179,24 @@ var Puppies = ( function(){
 
 
     function adoptPuppy() {
-      $('.adopt').click(function(e) {
+      $('.puppies-list').on("click", ".adopt", (function(e) {
+        console.log(e.target.value)
         e.preventDefault();
-        console.log("Adopt!!!!!")
+
+        deletePuppy(e.target.value);
       })
+      )
     }
 
 
-    function deletePuppy() {
-      $.ajax()
+    function deletePuppy(id) {
+      $.ajax({
+        url: "https://ajax-puppies.herokuapp.com/puppies/"+ parseInt(id) +".json",
+        type: "DELETE",
+        success: function() { 
+          alert("Congratulations, you have a new puppy!")
+          refresh(); }
+      })
     }
 
 
